@@ -1,43 +1,43 @@
 % M-file: mag_field.m
-% M-file to calculate the net magnetic field produced by a three-phase stator.
+% Calculates the net magnetic field produced by a three-phase stator
 
 clc; clear; close all;
 
 % Basic conditions
-bmax = 1;            % Normalized peak value
-freq = 60;           % Frequency (Hz)
-w = 2*pi*freq;       % Angular velocity (rad/s)
+bmax = 1;                   % Normalized peak value
+freq = 60;                  % Frequency (Hz)
+w = 2 * pi * freq;          % Angular velocity (rad/s)
 
-% Reduce frame count for faster plotting
-numFrames = 200;  
-t = linspace(0, 1/freq, numFrames);  % One full cycle
+% Time vector for one full cycle with reduced frames for speed
+numFrames = 200;
+t = linspace(0, 1/freq, numFrames);
 
-% Generate three-phase magnetic fields using complex representation
-Baa = sin(w*t) .* exp(1j * 0);
-Bbb = sin(w*t - 2*pi/3) .* exp(1j * 2*pi/3);
-Bcc = sin(w*t + 2*pi/3) .* exp(1j * -2*pi/3);
+% Generate three-phase magnetic field vectors (complex phasors)
+Baa = bmax * sin(w * t) .* exp(1j * 0);
+Bbb = bmax * sin(w * t - 2*pi/3) .* exp(1j * 2*pi/3);
+Bcc = bmax * sin(w * t + 2*pi/3) .* exp(1j * -2*pi/3);
 
-% Resultant magnetic field
+% Calculate resultant magnetic field
 Bnet = Baa + Bbb + Bcc;
 
-% Reference circle for visual comparison
-circle = 1.5 * exp(1j * w*t);
+% Reference circle (1.5 * max vector magnitude)
+circle = 1.5 * exp(1j * w * t);
 
-% Plotting
+% Plotting loop
 figure;
 for ii = 1:numFrames
-    clf; % Clear figure for animation (can be optimized further if needed)
-    hold on;
+    clf;                        % Clear figure for each frame
+    hold on;                    % Hold for multiple plots
     
-    % Reference circle
+    % Plot reference circle
     plot(real(circle), imag(circle), 'k--'); 
-
-    % Optional: show rotating phasor (Bloop) in green
-    plot([0 cos(w*t(ii))], [0 sin(w*t(ii))], 'g', 'LineWidth', 2);
-
-    % Net magnetic field vector in red
+    
+    % Optional: rotating unit phasor (Bloop)
+    plot([0 cos(w * t(ii))], [0 sin(w * t(ii))], 'g', 'LineWidth', 2);
+    
+    % Net magnetic field vector (Bnet)
     plot([0 real(Bnet(ii))], [0 imag(Bnet(ii))], 'r', 'LineWidth', 3);
-
+    
     % Axis settings
     axis square;
     axis([-2 2 -2 2]);
@@ -46,5 +46,5 @@ for ii = 1:numFrames
     title('Rotating Magnetic Field - Three-Phase Stator');
     grid on;
 
-    drawnow;
+    drawnow;                    % Update figure immediately
 end
