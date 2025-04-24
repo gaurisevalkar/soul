@@ -1,0 +1,34 @@
+% Torque-Speed Characteristics of Induction Motor with varying Rr'
+clear; clc;
+
+% Constants
+V = 220;             % Phase voltage (V)
+f = 50;              % Frequency (Hz)
+p = 4;               % Poles
+Ns_rpm = 120*f/p;    % Synchronous speed in RPM
+ws = 2*pi*Ns_rpm/60; % Synchronous speed in rad/s
+
+% Motor parameters
+Xs = 1.5;           % Stator reactance (Ohm)
+Xr = 1.5;           % Rotor reactance (Ohm)
+Xm = Xs + Xr;       % Total reactance
+
+% Rotor resistances to simulate
+Rr_values = [0.5, 1, 2];  % Ohms
+
+% Slip range (avoid division by zero at s=0)
+s = linspace(0.001, 1, 1000);
+
+% Plotting
+figure;
+hold on;
+for Rr = Rr_values
+    T = (3*V^2*Rr./s) ./ (ws*((Rr./s).^2 + Xm^2));
+    plot((1 - s)*Ns_rpm, T, 'LineWidth', 1, 'DisplayName', ['Rr = ' num2str(Rr) ' \Omega']);
+end
+
+title('Torque-Speed Characteristics of Induction Motor');
+xlabel('Rotor Speed (RPM)');
+ylabel('Torque (Nm)');
+legend('Location','northeast');
+grid on;
