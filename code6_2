@@ -1,0 +1,46 @@
+% M-file: mag_field.m
+% M-file to calculate the net magnetic field produced
+% by a three-phase stator.
+
+clc; clear; close all;
+
+% Set up the basic conditions
+bmax = 1;            % Normalize bmax to 1
+freq = 60;           % Frequency (Hz)
+w = 2*pi*freq;       % Angular velocity (rad/s)
+
+% Define a smooth time vector
+t = linspace(0, 1/60, 1000); % 1000 points per cycle
+
+% Generate the three-phase magnetic fields
+Baa = sin(w*t) .* (cos(0) + 1j*sin(0));
+Bbb = sin(w*t - 2*pi/3) .* (cos(2*pi/3) + 1j*sin(2*pi/3));
+Bcc = sin(w*t + 2*pi/3) .* (cos(-2*pi/3) + 1j*sin(-2*pi/3));
+
+% Calculate Bnet (resultant magnetic field)
+Bnet = Baa + Bbb + Bcc;
+Bloop = (cos(w*t) + 1j*sin(w*t));
+
+% Define a reference circle representing the expected maximum value of Bnet
+circle = 1.5 * (cos(w*t) + 1j*sin(w*t));
+
+% Plot the magnitude and direction of the resulting magnetic fields
+figure;
+for ii = 1:length(t)
+    clf; % Clear the figure for smooth animation
+    hold on;
+    
+    % Plot the reference circle correctly
+    plot(real(circle), imag(circle), 'k'); 
+
+    % Plot the three-phase magnetic field vectors
+    plot([0 real(Bloop(ii))], [0 imag(Bloop(ii))], 'g', 'LineWidth',3);
+    plot([0 real(Bnet(ii))], [0 imag(Bnet(ii))], 'r', 'LineWidth', 3); % Red for Bnet
+
+    % Set axis properties
+    axis square;
+    axis([-2 2 -2 2]);
+    drawnow; % Update plot
+    
+    hold off;
+end
