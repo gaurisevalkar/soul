@@ -36,4 +36,3 @@ legend('Location', 'northeast');
 grid on;
 xlim([0 Ns_rpm]);  % Limit x-axis to 0 to synchronous speed
 ylim auto;
-
